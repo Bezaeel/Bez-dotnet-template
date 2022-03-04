@@ -1,0 +1,36 @@
+version: '3.8'
+services:
+  db:
+    image: 'postgres:latest'
+    restart: always
+    ports:
+      - '5432:5432'
+    container_name: postgresql-BezTemp
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER= postgres
+      - POSTGRES_DB=BezTemp
+    volumes:
+      - 'postgresql-volume:/var/lib/postgresql/data'
+    networks:
+      - BezTemp
+  api:
+    container_name: 'BezTemp-api'
+    image: 'BezTemp-api'
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '5000:5000'
+    depends_on:
+      - db
+    networks:
+      - BezTemp
+
+networks:
+  BezTemp:
+    driver: bridge
+
+volumes:
+  postgresql-volume:
+    name: postgres-volume
